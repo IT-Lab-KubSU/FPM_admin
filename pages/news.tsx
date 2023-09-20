@@ -1,8 +1,8 @@
 import React from 'react';
-import {Accounts} from '../components/accounts';
+import {News} from "../components/news";
 
-const accounts = () => {
-   return <Accounts />;
+const news = () => {
+   return <News />;
 };
 
-export default accounts;
+export default news;

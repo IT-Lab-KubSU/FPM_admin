@@ -3,35 +3,23 @@ import React from "react";
 import {DeleteIcon} from "../icons/table/delete-icon";
 import {EditIcon} from "../icons/table/edit-icon";
 import {EyeIcon} from "../icons/table/eye-icon";
+import {INewProps} from "./news";
+import {DateTimeFormat} from "@formatjs/ecma402-abstract";
+import {DateFormatterOptions} from "@react-aria/i18n";
 
 interface Props {
-    item: any
+    item: INewProps
     columnKey: string | React.Key
 }
 
-export const RenderCellUsers = ({item, columnKey}: Props) => {
+export const RenderNewCell = ({item, columnKey}: Props) => {
+    // @ts-ignore
     const cellValue = item[columnKey];
     switch (columnKey) {
-        case "name":
-            return (
-                <User
-                    avatarProps={{
-                        src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-                    }}
-                    name={cellValue}
-                >
-                    {item.email}
-                </User>
-            );
-        case "role":
+        case "title":
             return (
                 <div>
-                    <div>
-                        <span>{cellValue}</span>
-                    </div>
-                    <div>
-                        <span>{item.team}</span>
-                    </div>
+                    {item.title}
                 </div>
             );
         case "status":
@@ -39,13 +27,7 @@ export const RenderCellUsers = ({item, columnKey}: Props) => {
                 <Chip
                     size="sm"
                     variant="flat"
-                    color={
-                        cellValue === "active"
-                            ? "success"
-                            : cellValue === "paused"
-                                ? "danger"
-                                : "warning"
-                    }
+                    color={cellValue === "Активна" ? "success" : "default"}
                 >
                     <span className="capitalize text-xs">{cellValue}</span>
                 </Chip>
@@ -81,6 +63,17 @@ export const RenderCellUsers = ({item, columnKey}: Props) => {
                     </div>
                 </div>
             );
+        case "date":
+            const date = new Date(item.date * 1000); // Умножьте на 1000, чтобы преобразовать секунды в миллисекунды
+            const options: DateFormatterOptions = {
+                hour: 'numeric',
+                minute: 'numeric',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric'
+            };
+            return <>{date.toLocaleString("ru-RU", options)}</>;
+
         default:
             return <>{cellValue}</>;
     }

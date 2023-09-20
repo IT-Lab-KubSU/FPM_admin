@@ -9,15 +9,17 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import React from "react";
+import {AddNoteBulkIcon} from "@nextui-org/shared-icons";
+import {PlusIcon} from "../icons/plus-icon";
 
-export const AddUser = () => {
+export const AddNew = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <div>
       <>
-        <Button onPress={onOpen} color="primary">
-          Add User
+        <Button onPress={onOpen} color="primary" startContent={<PlusIcon height={"15"} width={"15"}/>}>
+          Добавить новость
         </Button>
         <Modal
           isOpen={isOpen}
