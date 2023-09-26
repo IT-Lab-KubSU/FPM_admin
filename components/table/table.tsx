@@ -7,10 +7,13 @@ import {
     TableRow,
     Pagination, SortDescriptor, Input, Dropdown, DropdownTrigger, Button, DropdownMenu
 } from "@nextui-org/react";
-import React from "react";
+import React, {useEffect} from "react";
 import {SearchIcon} from "../icons/searchicon";
 import {ChevronDownIcon} from "@nextui-org/shared-icons";
 import {PlusIcon} from "../icons/plus-icon";
+import {AxiosPromise} from "axios";
+import {NewsApi} from "../../definitions";
+
 
 export interface IColumnProps {
     uid: string;
@@ -19,39 +22,55 @@ export interface IColumnProps {
     align?: 'start' | 'center' | 'end';
 }
 
+export interface IPage<T> {
+    data: Array<T>;
+    limit: number;
+    page: number;
+    totalElements: number;
+    totalPages: number;
+}
+
 export interface ITableProps<T> {
-    items: T[]
+    getItems: (limit: number, page: number) => AxiosPromise<IPage<T>>
     columns: IColumnProps[]
     RenderCell: ({item, columnKey}: { item: T, columnKey: React.Key | string }) => JSX.Element
 }
 
-export function TableWrapper<T>({items, columns, RenderCell}: ITableProps<T>) {
+export function TableWrapper<T>({getItems, columns, RenderCell}: ITableProps<T>) {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [page, setPage] = React.useState(1);
+    const [data, setData] = React.useState<IPage<T>>({
+        data: [],
+        limit: rowsPerPage,
+        page: page,
+        totalElements: 0,
+        totalPages: 1
+    });
+    const [loading, setLoading] = React.useState(true);
     const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
         column: "id",
         direction: "ascending",
     });
 
-    const pages = Math.ceil(items.length / rowsPerPage);
 
+    useEffect(() => {
+        getItems(rowsPerPage, page - 1).then(
+            ({data}) => {
+                setData(data);
+                setLoading(false)
+            }
+        )
+    }, [page, rowsPerPage])
 
-    const SlicedItems = React.useMemo(() => {
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-
-        return items.slice(start, end);
-    }, [page, rowsPerPage]);
-
-    const sortedItems = React.useMemo(() => {
-        return [...SlicedItems].sort((a: T, b: T) => {
-            const first = a[sortDescriptor.column as keyof T] as number;
-            const second = b[sortDescriptor.column as keyof T] as number;
-            const cmp = first < second ? -1 : first > second ? 1 : 0;
-
-            return sortDescriptor.direction === "descending" ? -cmp : cmp;
-        });
-    }, [sortDescriptor, SlicedItems]);
+    // const sortedItems = React.useMemo(() => {
+    //     return [...SlicedItems].sort((a: T, b: T) => {
+    //         const first = a[sortDescriptor.column as keyof T] as number;
+    //         const second = b[sortDescriptor.column as keyof T] as number;
+    //         const cmp = first < second ? -1 : first > second ? 1 : 0;
+    //
+    //         return sortDescriptor.direction === "descending" ? -cmp : cmp;
+    //     });
+    // }, [sortDescriptor, SlicedItems]);
 
     const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
         setRowsPerPage(Number(e.target.value));
@@ -61,7 +80,7 @@ export function TableWrapper<T>({items, columns, RenderCell}: ITableProps<T>) {
     const topContent = React.useMemo(() => {
         return (
             <div className="flex justify-between items-center">
-                <span className="text-default-400 text-small">Всего {items.length} строк</span>
+                <span className="text-default-400 text-small">Всего {data.totalElements} строк</span>
                 <label className="flex items-center text-default-400 text-small">
                     Строк на странице:
                     <select
@@ -76,8 +95,7 @@ export function TableWrapper<T>({items, columns, RenderCell}: ITableProps<T>) {
             </div>
         );
     }, [
-        onRowsPerPageChange,
-        SlicedItems.length,
+        onRowsPerPageChange
     ]);
 
     return (
@@ -99,7 +117,7 @@ export function TableWrapper<T>({items, columns, RenderCell}: ITableProps<T>) {
                             showControls
                             showShadow
                             page={page}
-                            total={pages}
+                            total={data.totalPages}
                             onChange={(page) => setPage(page)}
                         />
                     </div>
@@ -121,7 +139,7 @@ export function TableWrapper<T>({items, columns, RenderCell}: ITableProps<T>) {
                 </TableHeader>
                 <TableBody
                     emptyContent={"Данные не найдены"}
-                    items={sortedItems}>
+                    items={data.data}>
                     {(item) => (
                         <TableRow>
                             {(columnKey) => (

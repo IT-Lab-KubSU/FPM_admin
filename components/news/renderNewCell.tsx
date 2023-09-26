@@ -1,14 +1,13 @@
-import {User, Tooltip, Chip} from "@nextui-org/react";
+import {Tooltip, Chip} from "@nextui-org/react";
 import React from "react";
 import {DeleteIcon} from "../icons/table/delete-icon";
 import {EditIcon} from "../icons/table/edit-icon";
 import {EyeIcon} from "../icons/table/eye-icon";
-import {INewProps} from "./news";
-import {DateTimeFormat} from "@formatjs/ecma402-abstract";
 import {DateFormatterOptions} from "@react-aria/i18n";
+import {New} from "../../definitions";
 
 interface Props {
-    item: INewProps
+    item: New
     columnKey: string | React.Key
 }
 
@@ -27,9 +26,9 @@ export const RenderNewCell = ({item, columnKey}: Props) => {
                 <Chip
                     size="sm"
                     variant="flat"
-                    color={cellValue === "Активна" ? "success" : "default"}
+                    color={cellValue ? "success" : "default"}
                 >
-                    <span className="capitalize text-xs">{cellValue}</span>
+                    <span className="capitalize text-xs">{cellValue ? "Активна" : "Скрыта"}</span>
                 </Chip>
             );
 
@@ -64,7 +63,7 @@ export const RenderNewCell = ({item, columnKey}: Props) => {
                 </div>
             );
         case "date":
-            const date = new Date(item.date * 1000); // Умножьте на 1000, чтобы преобразовать секунды в миллисекунды
+            const date = new Date(item.creationTime!); // Умножьте на 1000, чтобы преобразовать секунды в миллисекунды
             const options: DateFormatterOptions = {
                 hour: 'numeric',
                 minute: 'numeric',

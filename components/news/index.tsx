@@ -1,6 +1,6 @@
 import {Button, Input, User} from "@nextui-org/react";
 import Link from "next/link";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {DotsIcon} from "../icons/accounts/dots-icon";
 import {InfoIcon} from "../icons/accounts/info-icon";
 import {TrashIcon} from "../icons/accounts/trash-icon";
@@ -9,8 +9,16 @@ import {SettingsIcon} from "../icons/sidebar/settings-icon";
 import {TableWrapper} from "../table";
 import {AddNew} from "./addNew";
 import {RenderNewCell} from "./renderNewCell";
-import {columns, INewProps, news} from "./news";
+import {columns} from "./news";
 import {DownloadIcon} from "../icons/download-icon";
+import {New, NewsApi} from "../../definitions";
+
+const newAPI = new NewsApi()
+
+
+function getItems(limit: number, page: number){
+    return newAPI.getNews(limit, page);
+}
 
 export const News = () => {
     return (
@@ -54,8 +62,11 @@ export const News = () => {
                 </div>
             </div>
             <div className="max-w-[95rem] mx-auto w-full">
-                <TableWrapper<INewProps> items={news} columns={columns} RenderCell={RenderNewCell}/>
+                <TableWrapper<New>
+                    getItems={getItems}
+                    columns={columns}
+                    RenderCell={RenderNewCell}/>
             </div>
         </div>
     );
-};
+}

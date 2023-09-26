@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "generate:ts": "npm run get-yaml-file && openapi-generator-cli generate",
+    "get-yaml-file": "api-spec-converter --from=openapi_3 --to=openapi_3 --syntax=yaml --order=alpha http://localhost:8080/v3/api-docs > api/api.yaml",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -20,6 +22,8 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.7.0",
+    "api-spec-converter": "^2.12.0",
     "@types/node": "18.7.18",
     "@types/react": "18.0.20",
     "@types/react-dom": "18.0.6",
