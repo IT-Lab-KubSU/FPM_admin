@@ -1,0 +1,162 @@
+components:
+  schemas:
+    New:
+      properties:
+        creationTime:
+          format: int64
+          type: integer
+        id:
+          format: int64
+          type: integer
+        images:
+          items:
+            type: string
+          type: array
+        status:
+          type: boolean
+        text:
+          type: string
+        title:
+          type: string
+      type: object
+    NewRequest:
+      properties:
+        images:
+          items:
+            type: string
+          type: array
+        status:
+          type: boolean
+        text:
+          type: string
+        title:
+          type: string
+      type: object
+    PageNew:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/New'
+          type: array
+        limit:
+          format: int32
+          type: integer
+        page:
+          format: int32
+          type: integer
+        totalElements:
+          format: int64
+          type: integer
+        totalPages:
+          format: int32
+          type: integer
+      type: object
+info:
+  contact:
+    email: amaliyabag@gmail.com
+    name: German
+    url: 'http://localhost:8080/swagger-ui/index.html#/'
+  description: This API exposes endpoints to manage database.
+  license:
+    name: MIT License
+    url: 'https://choosealicense.com/licenses/mit/'
+  termsOfService: 'http://localhost:8080/swagger-ui/index.html#/'
+  title: FPM API
+  version: '1.1'
+openapi: 3.0.1
+paths:
+  /news:
+    get:
+      operationId: getNews
+      parameters:
+        - in: query
+          name: limit
+          required: false
+          schema:
+            default: 50
+            format: int32
+            type: integer
+        - in: query
+          name: page
+          required: false
+          schema:
+            default: 0
+            format: int32
+            type: integer
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageNew'
+          description: OK
+      tags:
+        - News
+    post:
+      operationId: createNew
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+      tags:
+        - News
+    put:
+      operationId: updateNew
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/New'
+        required: true
+      responses:
+        '200':
+          description: OK
+      tags:
+        - News
+  '/news/{id}':
+    delete:
+      operationId: deleteNew
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            type: integer
+      responses:
+        '200':
+          description: OK
+      tags:
+        - News
+    get:
+      operationId: getNewById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            type: integer
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/New'
+          description: OK
+      tags:
+        - News
+servers:
+  - description: Server URL in Development environment
+    url: 'http://localhost:8080'
+  - description: Server URL in Production environment
+    url: 'http://localhost:8080'
+tags:
+  - description: News endpoints
+    name: News
+
