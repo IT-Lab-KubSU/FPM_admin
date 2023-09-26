@@ -3,8 +3,8 @@ export function PlusIcon({height, width}: {height: string, width: string}) {
         <svg fill="#ffffff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
              xlinkHref="http://www.w3.org/1999/xlink" height={height} width={width} viewBox="0 0 45.402 45.402" xmlSpace="preserve"
              stroke="#ffffff">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
             <g id="SVGRepo_iconCarrier">
                 <g>
                     <path

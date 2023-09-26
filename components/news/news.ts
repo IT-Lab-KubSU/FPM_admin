@@ -32,5 +32,85 @@ export const news: INewProps[] = [
         images: [],
         status: 'Активна',
         date: 1695143736
-    }
+    },
+    {
+        id: 3,
+        title: 'Tony Reichert',
+        text: '',
+        images: [],
+        status: 'Активна',
+        date: 1695143736
+    },
+    {
+        id: 4,
+        title: 'Tony Reichert',
+        text: '',
+        images: [],
+        status: 'Активна',
+        date: 1695143736
+    },
+    {
+        id: 5,
+        title: 'Tony Reichert',
+        text: '',
+        images: [],
+        status: 'Активна',
+        date: 1695143736
+    },
+    {
+        id: 6,
+        title: 'Tony Reichert',
+        text: '',
+        images: [],
+        status: 'Активна',
+        date: 1695143736
+    },
+    {
+        id: 7,
+        title: 'Tony Reichert',
+        text: '',
+        images: [],
+        status: 'Активна',
+        date: 1695143736
+    },
+    {
+        id: 8,
+        title: 'Tony Reichert',
+        text: '',
+        images: [],
+        status: 'Активна',
+        date: 1695143736
+    },
+    {
+        id: 9,
+        title: 'Tony Reichert',
+        text: '',
+        images: [],
+        status: 'Активна',
+        date: 1695143736
+    },
+    {
+        id: 10,
+        title: 'Tony Reichert',
+        text: '',
+        images: [],
+        status: 'Активна',
+        date: 1695143736
+    },
+    {
+        id: 11,
+        title: 'Tony Reichert',
+        text: '',
+        images: [],
+        status: 'Активна',
+        date: 1695143736
+    },
+    {
+        id: 12,
+        title: 'Tony Reichert',
+        text: '',
+        images: [],
+        status: 'Активна',
+        date: 1695143736
+    },
 ];
