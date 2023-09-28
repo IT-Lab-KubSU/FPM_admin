@@ -75,6 +75,22 @@ info:
 openapi: 3.0.1
 paths:
   /news:
+    delete:
+      operationId: deleteNews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                format: int64
+                type: integer
+              type: array
+        required: true
+      responses:
+        '200':
+          description: OK
+      tags:
+        - News
     get:
       operationId: getNews
       parameters:
@@ -92,6 +108,18 @@ paths:
             default: 0
             format: int32
             type: integer
+        - in: query
+          name: sort
+          required: false
+          schema:
+            default: '-id'
+            type: string
+        - in: query
+          name: search
+          required: false
+          schema:
+            default: ''
+            type: string
       responses:
         '200':
           content:

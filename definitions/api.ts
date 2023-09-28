@@ -211,6 +211,41 @@ export const NewsApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @param {Array<number>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteNews: async (requestBody: Array<number>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'requestBody' is not null or undefined
+            assertParamExists('deleteNews', 'requestBody', requestBody)
+            const localVarPath = `/news`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(requestBody, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -246,10 +281,12 @@ export const NewsApiAxiosParamCreator = function (configuration?: Configuration)
          * 
          * @param {number} [limit] 
          * @param {number} [page] 
+         * @param {string} [sort] 
+         * @param {string} [search] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getNews: async (limit?: number, page?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getNews: async (limit?: number, page?: number, sort?: string, search?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/news`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -268,6 +305,14 @@ export const NewsApiAxiosParamCreator = function (configuration?: Configuration)
 
             if (page !== undefined) {
                 localVarQueryParameter['page'] = page;
+            }
+
+            if (sort !== undefined) {
+                localVarQueryParameter['sort'] = sort;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
             }
 
 
@@ -348,6 +393,16 @@ export const NewsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {Array<number>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteNews(requestBody: Array<number>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteNews(requestBody, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -360,11 +415,13 @@ export const NewsApiFp = function(configuration?: Configuration) {
          * 
          * @param {number} [limit] 
          * @param {number} [page] 
+         * @param {string} [sort] 
+         * @param {string} [search] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getNews(limit?: number, page?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PageNew>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getNews(limit, page, options);
+        async getNews(limit?: number, page?: number, sort?: string, search?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PageNew>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getNews(limit, page, sort, search, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -407,6 +464,15 @@ export const NewsApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @param {Array<number>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteNews(requestBody: Array<number>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteNews(requestBody, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -418,11 +484,13 @@ export const NewsApiFactory = function (configuration?: Configuration, basePath?
          * 
          * @param {number} [limit] 
          * @param {number} [page] 
+         * @param {string} [sort] 
+         * @param {string} [search] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getNews(limit?: number, page?: number, options?: any): AxiosPromise<PageNew> {
-            return localVarFp.getNews(limit, page, options).then((request) => request(axios, basePath));
+        getNews(limit?: number, page?: number, sort?: string, search?: string, options?: any): AxiosPromise<PageNew> {
+            return localVarFp.getNews(limit, page, sort, search, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -467,6 +535,17 @@ export class NewsApi extends BaseAPI {
 
     /**
      * 
+     * @param {Array<number>} requestBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NewsApi
+     */
+    public deleteNews(requestBody: Array<number>, options?: AxiosRequestConfig) {
+        return NewsApiFp(this.configuration).deleteNews(requestBody, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {number} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -480,12 +559,14 @@ export class NewsApi extends BaseAPI {
      * 
      * @param {number} [limit] 
      * @param {number} [page] 
+     * @param {string} [sort] 
+     * @param {string} [search] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NewsApi
      */
-    public getNews(limit?: number, page?: number, options?: AxiosRequestConfig) {
-        return NewsApiFp(this.configuration).getNews(limit, page, options).then((request) => request(this.axios, this.basePath));
+    public getNews(limit?: number, page?: number, sort?: string, search?: string, options?: AxiosRequestConfig) {
+        return NewsApiFp(this.configuration).getNews(limit, page, sort, search, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

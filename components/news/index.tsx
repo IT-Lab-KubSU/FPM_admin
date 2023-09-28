@@ -1,28 +1,47 @@
-import {Button, Input, User} from "@nextui-org/react";
+import {
+    Button, Chip,
+    Input,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    Tooltip,
+    User
+} from "@nextui-org/react";
 import Link from "next/link";
-import React, {useEffect, useState} from "react";
-import {DotsIcon} from "../icons/accounts/dots-icon";
-import {InfoIcon} from "../icons/accounts/info-icon";
+import React, {Key, useState} from "react";
 import {TrashIcon} from "../icons/accounts/trash-icon";
 import {HouseIcon} from "../icons/breadcrumb/house-icon";
-import {SettingsIcon} from "../icons/sidebar/settings-icon";
-import {TableWrapper} from "../table";
+import {IColumnProps, TableWrapper} from "../table";
 import {AddNew} from "./addNew";
 import {RenderNewCell} from "./renderNewCell";
-import {columns} from "./news";
 import {DownloadIcon} from "../icons/download-icon";
 import {New, NewsApi} from "../../definitions";
+import {DeleteNewsLayout} from "./deleteNewsLayout";
 
 const newAPI = new NewsApi()
 
-
-function getItems(limit: number, page: number){
-    return newAPI.getNews(limit, page);
-}
+export const NewColumns: IColumnProps[] = [
+    {name: 'ID', uid: 'id'},
+    {name: 'Название', uid: 'title'},
+    {name: 'Статус', uid: 'status'},
+    {name: 'Дата', uid: 'creationTime'},
+    {name: 'Действия', uid: 'actions', hide: true},
+];
 
 export const News = () => {
+    const [search, setSearch] = useState("");
+    const [selected, setSelected] = useState<number[]>([]);
+    const [isOpen, onOpenChange] = useState<boolean>(false);
+    const [refreshData, setRefreshData] = useState(false);
+
+    function getItems(limit: number, page: number, sort?: string) {
+        return newAPI.getNews(limit, page, sort, search);
+    }
+
     return (
-        <div className="my-14 max-w-[95rem] px-4 mx-auto w-full flex flex-col gap-4">
+        <div className="my-8 max-w-[95rem] px-4 mx-auto w-full flex flex-col gap-4">
             <ul className="flex gap-2">
                 <li className="flex gap-2">
                     <HouseIcon/>
@@ -47,15 +66,24 @@ export const News = () => {
                             input: "w-full",
                             mainWrapper: "w-full",
                         }}
+                        onInput={event => {
+                            if (event.target) { // @ts-ignore
+                                setSearch(event.target.value)
+                            }
+                        }}
                         placeholder="Найти новость"
                     />
-                    <SettingsIcon/>
-                    <TrashIcon/>
-                    <InfoIcon/>
-                    <DotsIcon/>
+                    <DeleteNewsLayout items={selected}
+                                      setRefreshData={setRefreshData}
+                                      color={"danger"}
+                                      tooltipContent={"Удалить выбранное"}>
+                        <Chip color="danger" className={"h-unit-10 px-3"} radius={"md"}>
+                            <TrashIcon/>
+                        </Chip>
+                    </DeleteNewsLayout>
                 </div>
                 <div className="flex flex-row gap-3.5 flex-wrap">
-                    <AddNew/>
+                    <AddNew setRefreshData={setRefreshData}/>
                     <Button color="primary" startContent={<DownloadIcon height={"20"} width={"20"}/>}>
                         Выгрузить в csv
                     </Button>
@@ -64,9 +92,48 @@ export const News = () => {
             <div className="max-w-[95rem] mx-auto w-full">
                 <TableWrapper<New>
                     getItems={getItems}
-                    columns={columns}
+                    columns={NewColumns}
+                    setRefreshData={setRefreshData}
+                    refreshData={refreshData}
+                    setSelected={setSelected}
                     RenderCell={RenderNewCell}/>
             </div>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
+                            <ModalBody>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    Nullam pulvinar risus non risus hendrerit venenatis.
+                                    Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                                </p>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    Nullam pulvinar risus non risus hendrerit venenatis.
+                                    Pellentesque sit amet hendrerit risus, sed porttitor quam.
+                                </p>
+                                <p>
+                                    Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit
+                                    dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis.
+                                    Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod.
+                                    Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur
+                                    proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
+                                </p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger" variant="light" onPress={onClose}>
+                                    Close
+                                </Button>
+                                <Button color="primary" onPress={onClose}>
+                                    Action
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
         </div>
     );
 }

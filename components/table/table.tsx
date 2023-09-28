@@ -5,15 +5,14 @@ import {
     TableColumn,
     TableHeader,
     TableRow,
-    Pagination, SortDescriptor, Input, Dropdown, DropdownTrigger, Button, DropdownMenu
+    Pagination, SortDescriptor
 } from "@nextui-org/react";
-import React, {useEffect} from "react";
-import {SearchIcon} from "../icons/searchicon";
-import {ChevronDownIcon} from "@nextui-org/shared-icons";
-import {PlusIcon} from "../icons/plus-icon";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {AxiosPromise} from "axios";
-import {NewsApi} from "../../definitions";
-
+import {set} from "@internationalized/date/src/manipulation";
+import {Spinner} from "@nextui-org/spinner";
+import {Selection} from "@react-types/shared/src/selection";
+import {Radio, RadioGroup} from "@nextui-org/radio";
 
 export interface IColumnProps {
     uid: string;
@@ -31,14 +30,29 @@ export interface IPage<T> {
 }
 
 export interface ITableProps<T> {
-    getItems: (limit: number, page: number) => AxiosPromise<IPage<T>>
-    columns: IColumnProps[]
-    RenderCell: ({item, columnKey}: { item: T, columnKey: React.Key | string }) => JSX.Element
+    getItems: (limit: number, page: number, sort?: string) => AxiosPromise<IPage<T>>
+    columns: IColumnProps[],
+    refreshData: boolean,
+    setRefreshData: React.Dispatch<SetStateAction<boolean>>,
+    setSelected: React.Dispatch<SetStateAction<number[]>>,
+    RenderCell: ({item, columnKey, setRefreshData}: {
+        item: T,
+        columnKey: React.Key | string,
+        setRefreshData: React.Dispatch<SetStateAction<boolean>>
+    }) => JSX.Element
 }
 
-export function TableWrapper<T>({getItems, columns, RenderCell}: ITableProps<T>) {
+export function TableWrapper<T>({
+                                    getItems,
+                                    columns,
+                                    refreshData,
+                                    setRefreshData,
+                                    setSelected,
+                                    RenderCell
+                                }: ITableProps<T>) {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [page, setPage] = React.useState(1);
+    const [pages, setPages] = React.useState(1);
     const [data, setData] = React.useState<IPage<T>>({
         data: [],
         limit: rowsPerPage,
@@ -49,33 +63,39 @@ export function TableWrapper<T>({getItems, columns, RenderCell}: ITableProps<T>)
     const [loading, setLoading] = React.useState(true);
     const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
         column: "id",
-        direction: "ascending",
+        direction: "descending",
     });
 
 
     useEffect(() => {
-        getItems(rowsPerPage, page - 1).then(
-            ({data}) => {
-                setData(data);
-                setLoading(false)
-            }
-        )
-    }, [page, rowsPerPage])
+        setRefreshData(false);
+        if (sortDescriptor.column && columns.filter(col => col.hide).map(col => col.uid).includes(sortDescriptor.column.toString()))
+            return
+        const sort = sortDescriptor.direction === "ascending" ? `${sortDescriptor.column}` : `-${sortDescriptor.column}`;
 
-    // const sortedItems = React.useMemo(() => {
-    //     return [...SlicedItems].sort((a: T, b: T) => {
-    //         const first = a[sortDescriptor.column as keyof T] as number;
-    //         const second = b[sortDescriptor.column as keyof T] as number;
-    //         const cmp = first < second ? -1 : first > second ? 1 : 0;
-    //
-    //         return sortDescriptor.direction === "descending" ? -cmp : cmp;
-    //     });
-    // }, [sortDescriptor, SlicedItems]);
+        getItems(rowsPerPage, page - 1, sort)
+            .then(
+                ({data}) => {
+                    const p = Math.max(data.totalPages, 1)
+                    setPages(p);
+                    setPage(Math.max(Math.min(data.page + 1, p), 1));
+
+                    setData(data);
+                    setLoading(false);
+                }
+            )
+            .catch(er => console.error(er))
+    }, [page, rowsPerPage, sortDescriptor, columns, getItems, refreshData, setRefreshData])
 
     const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
         setRowsPerPage(Number(e.target.value));
         setPage(1);
     }, []);
+
+    const onSelectionChange = React.useCallback((e: Selection) => {
+        const keys = Array.from(e[Symbol.iterator]());
+        setSelected(keys.map(it => Number(it)))
+    }, [setSelected]);
 
     const topContent = React.useMemo(() => {
         return (
@@ -95,7 +115,7 @@ export function TableWrapper<T>({getItems, columns, RenderCell}: ITableProps<T>)
             </div>
         );
     }, [
-        onRowsPerPageChange
+        data.totalElements, onRowsPerPageChange
     ]);
 
     return (
@@ -104,6 +124,8 @@ export function TableWrapper<T>({getItems, columns, RenderCell}: ITableProps<T>)
                 aria-label="Example table with custom cells"
                 isHeaderSticky
                 selectionMode="multiple"
+                onSelectionChange={onSelectionChange}
+                selectionBehavior={"replace"}
                 topContent={topContent}
                 topContentPlacement="outside"
                 bottomContentPlacement="outside"
@@ -117,7 +139,7 @@ export function TableWrapper<T>({getItems, columns, RenderCell}: ITableProps<T>)
                             showControls
                             showShadow
                             page={page}
-                            total={data.totalPages}
+                            total={pages}
                             onChange={(page) => setPage(page)}
                         />
                     </div>
@@ -138,13 +160,15 @@ export function TableWrapper<T>({getItems, columns, RenderCell}: ITableProps<T>)
                     )}
                 </TableHeader>
                 <TableBody
-                    emptyContent={"Данные не найдены"}
+                    isLoading={loading}
+                    loadingContent={<Spinner color="primary"/>}
+                    emptyContent={<>Данные не найдены</>}
                     items={data.data}>
                     {(item) => (
                         <TableRow>
                             {(columnKey) => (
                                 <TableCell>
-                                    {RenderCell({item, columnKey})}
+                                    {RenderCell({item, columnKey, setRefreshData})}
                                 </TableCell>
                             )}
                         </TableRow>

@@ -1,25 +1,25 @@
 import {Tooltip, Chip} from "@nextui-org/react";
-import React from "react";
+import React, {SetStateAction} from "react";
 import {DeleteIcon} from "../icons/table/delete-icon";
 import {EditIcon} from "../icons/table/edit-icon";
 import {EyeIcon} from "../icons/table/eye-icon";
 import {DateFormatterOptions} from "@react-aria/i18n";
 import {New} from "../../definitions";
+import {DeleteNewsLayout} from "./deleteNewsLayout";
 
 interface Props {
     item: New
-    columnKey: string | React.Key
+    columnKey: string | React.Key,
+    setRefreshData: React.Dispatch<SetStateAction<boolean>>
 }
 
-export const RenderNewCell = ({item, columnKey}: Props) => {
+export const RenderNewCell = ({item, columnKey, setRefreshData}: Props) => {
     // @ts-ignore
     const cellValue = item[columnKey];
     switch (columnKey) {
         case "title":
             return (
-                <div>
-                    {item.title}
-                </div>
+                <>{item.title}</>
             );
         case "status":
             return (
@@ -37,33 +37,30 @@ export const RenderNewCell = ({item, columnKey}: Props) => {
                 <div className="flex items-center gap-4 ">
                     <div>
                         <Tooltip content="Details">
-                            <button onClick={() => console.log("View user", item.id)}>
+                            <a href={`/news/${item.id}`} target={"_blank"}>
                                 <EyeIcon size={20} fill="#979797"/>
-                            </button>
+                            </a>
                         </Tooltip>
                     </div>
                     <div>
-                        <Tooltip content="Edit user" color="secondary">
+                        <Tooltip content="Изменить" color="secondary">
                             <button onClick={() => console.log("Edit user", item.id)}>
                                 <EditIcon size={20} fill="#979797"/>
                             </button>
                         </Tooltip>
                     </div>
                     <div>
-                        <Tooltip
-                            content="Delete user"
-                            color="danger"
-                            onClick={() => console.log("Delete user", item.id)}
-                        >
-                            <button>
-                                <DeleteIcon size={20} fill="#FF0080"/>
-                            </button>
-                        </Tooltip>
+                        <DeleteNewsLayout items={[item.id]}
+                                          setRefreshData={setRefreshData}
+                                          color={"danger"}
+                                          tooltipContent={"Удалить"}>
+                            <DeleteIcon size={20} fill="#FF0080"/>
+                        </DeleteNewsLayout>
                     </div>
                 </div>
             );
-        case "date":
-            const date = new Date(item.creationTime!); // Умножьте на 1000, чтобы преобразовать секунды в миллисекунды
+        case "creationTime":
+            const date = new Date(item.creationTime!);
             const options: DateFormatterOptions = {
                 hour: 'numeric',
                 minute: 'numeric',
