@@ -1,3 +1,4 @@
+"use client"
 import { tv } from "@nextui-org/react";
 
 // NEEDS TO BE REFACTORED

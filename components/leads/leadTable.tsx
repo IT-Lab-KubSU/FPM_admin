@@ -7,53 +7,39 @@ import {
     TableRow,
     Pagination, SortDescriptor
 } from "@nextui-org/react";
-import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
-import {AxiosPromise} from "axios";
-import {set} from "@internationalized/date/src/manipulation";
+import React, {SetStateAction, useEffect} from "react";
 import {Spinner} from "@nextui-org/spinner";
 import {Selection} from "@react-types/shared/src/selection";
-import {Radio, RadioGroup} from "@nextui-org/radio";
+import {
+    LeadFilterSortFieldEnum, LeadsApi, PageLead
+} from "../../definitions";
+import {RenderLeadCell} from "./renderLeadCell";
+import {IColumnProps} from "../table";
 
-export interface IColumnProps {
-    uid: string;
-    name: string;
-    hide?: boolean;
-    align?: 'start' | 'center' | 'end';
+export const LeadsColumns: IColumnProps<LeadFilterSortFieldEnum>[] = [
+    {name: 'ID', uid: 'id'},
+    {name: 'Имя', uid: 'name'},
+    {name: 'Причина', uid: 'reason'},
+    {name: 'Статус', uid: 'status'},
+    {name: 'Дата', uid: 'creationTime'},
+    {name: 'Действия', uid: 'actions', hide: true},
+];
+
+const leadsApi = new LeadsApi()
+
+interface ILeadsTable {
+    search: string,
+    setRefreshData: React.Dispatch<SetStateAction<boolean>>
+    setSelected: React.Dispatch<SetStateAction<number[]>>
+    refreshData: boolean
 }
 
-export interface IPage<T> {
-    data: Array<T>;
-    limit: number;
-    page: number;
-    totalElements: number;
-    totalPages: number;
-}
-
-export interface ITableProps<T> {
-    getItems: (limit: number, page: number, sort?: string) => AxiosPromise<IPage<T>>
-    columns: IColumnProps[],
-    refreshData: boolean,
-    setRefreshData: React.Dispatch<SetStateAction<boolean>>,
-    setSelected: React.Dispatch<SetStateAction<number[]>>,
-    RenderCell: ({item, columnKey, setRefreshData}: {
-        item: T,
-        columnKey: React.Key | string,
-        setRefreshData: React.Dispatch<SetStateAction<boolean>>
-    }) => JSX.Element
-}
-
-export function TableWrapper<T>({
-                                    getItems,
-                                    columns,
-                                    refreshData,
-                                    setRefreshData,
-                                    setSelected,
-                                    RenderCell
-                                }: ITableProps<T>) {
+export function LeadTable({search, setRefreshData, refreshData, setSelected}: ILeadsTable) {
+    const columns = LeadsColumns;
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [page, setPage] = React.useState(1);
     const [pages, setPages] = React.useState(1);
-    const [data, setData] = React.useState<IPage<T>>({
+    const [data, setData] = React.useState<PageLead>({
         data: [],
         limit: rowsPerPage,
         page: page,
@@ -68,24 +54,42 @@ export function TableWrapper<T>({
 
 
     useEffect(() => {
-        setRefreshData(false);
-        if (sortDescriptor.column && columns.filter(col => col.hide).map(col => col.uid).includes(sortDescriptor.column.toString()))
-            return
-        const sort = sortDescriptor.direction === "ascending" ? `${sortDescriptor.column}` : `-${sortDescriptor.column}`;
+        let isMounted = true;
+        const fetchData = () => {
+            setLoading(true);
+            leadsApi.getLeads({
+                limit: 100,
+                page: 0,
+                sortField: columns.filter(col => col.uid === sortDescriptor.column)[0].sortName ?? "ID",
+                sortOrder: sortDescriptor.direction === "ascending" ? "ASC" : "DESC",
+                search: search
+            })
+                .then(
+                    ({data}) => {
+                        const p = Math.max(data.totalPages, 1)
+                        setPages(p);
+                        setPage(Math.max(Math.min(data.page + 1, p), 1));
 
-        getItems(rowsPerPage, page - 1, sort)
-            .then(
-                ({data}) => {
-                    const p = Math.max(data.totalPages, 1)
-                    setPages(p);
-                    setPage(Math.max(Math.min(data.page + 1, p), 1));
+                        setData(data);
+                        setLoading(false);
+                    }
+                )
+                .catch(error => {
+                    console.error(error);
+                    if (isMounted) {
+                        setTimeout(() => {
+                            fetchData();
+                        }, 5000);
+                    }
+                });
+        }
 
-                    setData(data);
-                    setLoading(false);
-                }
-            )
-            .catch(er => console.error(er))
-    }, [page, rowsPerPage, sortDescriptor, columns, getItems, refreshData, setRefreshData])
+        fetchData();
+
+        return () => {
+            isMounted = false;
+        }
+    }, [page, rowsPerPage, sortDescriptor, columns, refreshData, search])
 
     const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
         setRowsPerPage(Number(e.target.value));
@@ -168,7 +172,7 @@ export function TableWrapper<T>({
                         <TableRow>
                             {(columnKey) => (
                                 <TableCell>
-                                    {RenderCell({item, columnKey, setRefreshData})}
+                                    {RenderLeadCell({item, columnKey, setRefreshData})}
                                 </TableCell>
                             )}
                         </TableRow>

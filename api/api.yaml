@@ -1,5 +1,103 @@
 components:
   schemas:
+    CurriculumRequest:
+      properties:
+        department:
+          type: string
+        directionCode:
+          type: string
+        plan:
+          additionalProperties:
+            items:
+              $ref: '#/components/schemas/Subject'
+            type: array
+          type: object
+      required:
+        - department
+        - directionCode
+        - plan
+      type: object
+    Lead:
+      properties:
+        creationTime:
+          format: int64
+          type: integer
+        email:
+          type: string
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+        number:
+          type: string
+        reason:
+          enum:
+            - CALLBACK
+            - ADMISSION
+          type: string
+        status:
+          type: boolean
+      required:
+        - creationTime
+        - email
+        - id
+        - name
+        - number
+        - reason
+        - status
+      type: object
+    LeadFilter:
+      properties:
+        limit:
+          format: int32
+          type: integer
+        page:
+          format: int32
+          type: integer
+        search:
+          type: string
+        sortField:
+          enum:
+            - ID
+            - NAME
+            - STATUS
+            - REASON
+            - CREATION_TIME
+          type: string
+        sortOrder:
+          enum:
+            - DESC
+            - ASC
+          type: string
+        status:
+          type: boolean
+      required:
+        - limit
+        - page
+      type: object
+    LeadRequest:
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        number:
+          type: string
+        reason:
+          enum:
+            - CALLBACK
+            - ADMISSION
+          type: string
+        status:
+          type: boolean
+      required:
+        - email
+        - name
+        - number
+        - reason
+        - status
+      type: object
     New:
       properties:
         creationTime:
@@ -44,6 +142,57 @@ components:
         - text
         - title
       type: object
+    NewsFilter:
+      properties:
+        limit:
+          format: int32
+          type: integer
+        page:
+          format: int32
+          type: integer
+        search:
+          type: string
+        sortField:
+          enum:
+            - ID
+            - TITLE
+            - STATUS
+            - CREATION_TIME
+          type: string
+        sortOrder:
+          enum:
+            - DESC
+            - ASC
+          type: string
+      required:
+        - limit
+        - page
+      type: object
+    PageLead:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Lead'
+          type: array
+        limit:
+          format: int32
+          type: integer
+        page:
+          format: int32
+          type: integer
+        totalElements:
+          format: int64
+          type: integer
+        totalPages:
+          format: int32
+          type: integer
+      required:
+        - data
+        - limit
+        - page
+        - totalElements
+        - totalPages
+      type: object
     PageNew:
       properties:
         data:
@@ -69,14 +218,45 @@ components:
         - totalElements
         - totalPages
       type: object
+    Subject:
+      properties:
+        credit:
+          type: boolean
+        exam:
+          type: boolean
+        hours:
+          format: int32
+          type: integer
+        title:
+          type: string
+      required:
+        - credit
+        - exam
+        - hours
+        - title
+      type: object
 info:
   title: OpenAPI definition
   version: v0
 openapi: 3.0.1
 paths:
-  /news:
+  /api/curriculum:
+    post:
+      operationId: saveCurriculum
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurriculumRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+      tags:
+        - Curriculum
+  /api/leads:
     delete:
-      operationId: deleteNews
+      operationId: deleteLeads
       requestBody:
         content:
           application/json:
@@ -90,42 +270,98 @@ paths:
         '200':
           description: OK
       tags:
-        - News
-    get:
-      operationId: getNews
-      parameters:
-        - in: query
-          name: limit
-          required: false
-          schema:
-            default: 50
-            format: int32
-            type: integer
-        - in: query
-          name: page
-          required: false
-          schema:
-            default: 0
-            format: int32
-            type: integer
-        - in: query
-          name: sort
-          required: false
-          schema:
-            default: '-id'
-            type: string
-        - in: query
-          name: search
-          required: false
-          schema:
-            default: ''
-            type: string
+        - Leads
+    post:
+      operationId: createLead
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+      tags:
+        - Leads
+    put:
+      operationId: updateLead
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lead'
+        required: true
+      responses:
+        '200':
+          description: OK
+      tags:
+        - Leads
+  /api/leads/filter:
+    post:
+      operationId: getLeads
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadFilter'
+        required: true
       responses:
         '200':
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/PageNew'
+                $ref: '#/components/schemas/PageLead'
+          description: OK
+      tags:
+        - Leads
+  '/api/leads/{id}':
+    delete:
+      operationId: deleteLead
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            type: integer
+      responses:
+        '200':
+          description: OK
+      tags:
+        - Leads
+    get:
+      operationId: getLeadById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            type: integer
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Lead'
+          description: OK
+      tags:
+        - Leads
+  /api/news:
+    delete:
+      operationId: deleteNews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                format: int64
+                type: integer
+              type: array
+        required: true
+      responses:
+        '200':
           description: OK
       tags:
         - News
@@ -155,7 +391,25 @@ paths:
           description: OK
       tags:
         - News
-  '/news/{id}':
+  /api/news/filter:
+    post:
+      operationId: getNews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsFilter'
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageNew'
+          description: OK
+      tags:
+        - News
+  '/api/news/{id}':
     delete:
       operationId: deleteNew
       parameters:
@@ -194,4 +448,8 @@ servers:
 tags:
   - description: News endpoints
     name: News
+  - description: Leads endpoints
+    name: Leads
+  - description: Curriculum endpoints
+    name: Curriculum
 

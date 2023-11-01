@@ -1,6 +1,5 @@
 import {
     Button,
-    Input,
     Modal,
     ModalBody,
     ModalContent,
@@ -8,21 +7,13 @@ import {
     ModalHeader, Tooltip,
     useDisclosure,
 } from "@nextui-org/react";
-import React, {ChangeEvent, SetStateAction, useState} from "react";
-import {PlusIcon} from "../icons/plus-icon";
-import {Textarea} from "@nextui-org/input";
-import {NewRequest, NewsApi} from "../../definitions";
-import {fileToBase64} from "../../base64Tool";
-import {Checkbox} from "@nextui-org/checkbox";
-import {TrashIcon} from "../icons/accounts/trash-icon";
-import {omit} from "next/dist/shared/lib/router/utils/omit";
+import React, {SetStateAction} from "react";
+import {AxiosResponse} from "axios";
 
-const newAPI = new NewsApi()
-
-
-export const DeleteNewsLayout = ({items, setRefreshData, color, tooltipContent, children}: {
+export const DeleteItemsLayout = ({items, deleteFunc, setRefreshData, color, tooltipContent, children}: {
     items: number[],
     setRefreshData: React.Dispatch<SetStateAction<boolean>>,
+    deleteFunc: (items: number[]) => Promise<AxiosResponse>
     color: "primary" | "danger",
     tooltipContent: string,
     children: React.ReactNode
@@ -33,8 +24,8 @@ export const DeleteNewsLayout = ({items, setRefreshData, color, tooltipContent, 
         if (!items.length)
             return
 
-        newAPI.deleteNews(items).then(() => {
-            setRefreshData(true);
+        deleteFunc(items).then(() => {
+            setRefreshData(value => !value);
         }).catch(er => console.error(er))
     }
 

@@ -10,14 +10,15 @@ import { CollapseItems } from "./collapse-items";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarMenu } from "./sidebar-menu";
 import { useSidebarContext } from "../layout/layout-context";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import {NewIcon} from "../icons/new-icon";
 import {FpmLogo} from "../icons/fpm-logo";
+import {LeadsIcon} from "../icons/leads-icon";
+import {PlanIcon} from "../icons/plan-icon";
 
 export const SidebarWrapper = () => {
-  const router = useRouter();
   const { collapsed, setCollapsed } = useSidebarContext();
-
+  const pathname = usePathname()
   return (
     <aside className="h-screen z-[202] sticky top-0">
       {collapsed ? (
@@ -38,7 +39,7 @@ export const SidebarWrapper = () => {
                 FPM
               </h3>
               <span className="text-xs font-medium text-default-500">
-              KSU
+              KubSU
             </span>
             </div>
           </div>
@@ -48,42 +49,39 @@ export const SidebarWrapper = () => {
             <SidebarItem
               title="Dashboard"
               icon={<HomeIcon />}
-              isActive={router.pathname === "/"}
+              isActive={pathname === "/"}
               href="/"
             />
             <SidebarMenu title="Главное меню">
               <SidebarItem
-                isActive={router.pathname === "/news"}
+                isActive={/\/news.*/.test(pathname)}
                 title="Новости"
                 icon={<NewIcon />}
-                href="news"
+                href="/news"
               />
               <SidebarItem
-                isActive={router.pathname === "/payments"}
-                title="Payments"
-                icon={<PaymentsIcon />}
+                  isActive={/\/leads.*/.test(pathname)}
+                  title="Заявки"
+                  icon={<LeadsIcon />}
+                  href="/leads"
               />
-              <CollapseItems
-                icon={<BalanceIcon />}
-                items={["Banks Accounts", "Credit Cards", "Loans"]}
-                title="Balances"
+              <SidebarItem
+                  isActive={/\/curriculum.*/.test(pathname)}
+                  title="Учебный план"
+                  icon={<PlanIcon />}
+                  href="/curriculum"
               />
+              {/*<CollapseItems*/}
+              {/*  icon={<BalanceIcon />}*/}
+              {/*  items={["Banks Accounts", "Credit Cards", "Loans"]}*/}
+              {/*  title="Balances"*/}
+              {/*/>*/}
             </SidebarMenu>
 
             <SidebarMenu title="Основные разделы">
               <SidebarItem
-                isActive={router.pathname === "/developers"}
-                title="Developers"
-                icon={<DevIcon />}
-              />
-              <SidebarItem
-                isActive={router.pathname === "/view"}
-                title="View Test Data"
-                icon={<ViewIcon />}
-              />
-              <SidebarItem
-                isActive={router.pathname === "/settings"}
-                title="Settings"
+                isActive={pathname === "/settings"}
+                title="Настройки"
                 icon={<SettingsIcon />}
               />
             </SidebarMenu>

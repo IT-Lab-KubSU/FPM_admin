@@ -26,6 +26,193 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 /**
  * 
  * @export
+ * @interface CurriculumRequest
+ */
+export interface CurriculumRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof CurriculumRequest
+     */
+    'department': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CurriculumRequest
+     */
+    'directionCode': string;
+    /**
+     * 
+     * @type {{ [key: string]: Array<Subject>; }}
+     * @memberof CurriculumRequest
+     */
+    'plan': { [key: string]: Array<Subject>; };
+}
+/**
+ * 
+ * @export
+ * @interface Lead
+ */
+export interface Lead {
+    /**
+     * 
+     * @type {number}
+     * @memberof Lead
+     */
+    'creationTime': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Lead
+     */
+    'email': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Lead
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Lead
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Lead
+     */
+    'number': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Lead
+     */
+    'reason': LeadReasonEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Lead
+     */
+    'status': boolean;
+}
+
+export const LeadReasonEnum = {
+    Callback: 'CALLBACK',
+    Admission: 'ADMISSION'
+} as const;
+
+export type LeadReasonEnum = typeof LeadReasonEnum[keyof typeof LeadReasonEnum];
+
+/**
+ * 
+ * @export
+ * @interface LeadFilter
+ */
+export interface LeadFilter {
+    /**
+     * 
+     * @type {number}
+     * @memberof LeadFilter
+     */
+    'limit': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof LeadFilter
+     */
+    'page': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LeadFilter
+     */
+    'search'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LeadFilter
+     */
+    'sortField'?: LeadFilterSortFieldEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof LeadFilter
+     */
+    'sortOrder'?: LeadFilterSortOrderEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LeadFilter
+     */
+    'status'?: boolean;
+}
+
+export const LeadFilterSortFieldEnum = {
+    Id: 'ID',
+    Name: 'NAME',
+    Status: 'STATUS',
+    Reason: 'REASON',
+    CreationTime: 'CREATION_TIME'
+} as const;
+
+export type LeadFilterSortFieldEnum = typeof LeadFilterSortFieldEnum[keyof typeof LeadFilterSortFieldEnum];
+export const LeadFilterSortOrderEnum = {
+    Desc: 'DESC',
+    Asc: 'ASC'
+} as const;
+
+export type LeadFilterSortOrderEnum = typeof LeadFilterSortOrderEnum[keyof typeof LeadFilterSortOrderEnum];
+
+/**
+ * 
+ * @export
+ * @interface LeadRequest
+ */
+export interface LeadRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof LeadRequest
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LeadRequest
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LeadRequest
+     */
+    'number': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LeadRequest
+     */
+    'reason': LeadRequestReasonEnum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LeadRequest
+     */
+    'status': boolean;
+}
+
+export const LeadRequestReasonEnum = {
+    Callback: 'CALLBACK',
+    Admission: 'ADMISSION'
+} as const;
+
+export type LeadRequestReasonEnum = typeof LeadRequestReasonEnum[keyof typeof LeadRequestReasonEnum];
+
+/**
+ * 
+ * @export
  * @interface New
  */
 export interface New {
@@ -100,6 +287,96 @@ export interface NewRequest {
 /**
  * 
  * @export
+ * @interface NewsFilter
+ */
+export interface NewsFilter {
+    /**
+     * 
+     * @type {number}
+     * @memberof NewsFilter
+     */
+    'limit': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof NewsFilter
+     */
+    'page': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof NewsFilter
+     */
+    'search'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NewsFilter
+     */
+    'sortField'?: NewsFilterSortFieldEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof NewsFilter
+     */
+    'sortOrder'?: NewsFilterSortOrderEnum;
+}
+
+export const NewsFilterSortFieldEnum = {
+    Id: 'ID',
+    Title: 'TITLE',
+    Status: 'STATUS',
+    CreationTime: 'CREATION_TIME'
+} as const;
+
+export type NewsFilterSortFieldEnum = typeof NewsFilterSortFieldEnum[keyof typeof NewsFilterSortFieldEnum];
+export const NewsFilterSortOrderEnum = {
+    Desc: 'DESC',
+    Asc: 'ASC'
+} as const;
+
+export type NewsFilterSortOrderEnum = typeof NewsFilterSortOrderEnum[keyof typeof NewsFilterSortOrderEnum];
+
+/**
+ * 
+ * @export
+ * @interface PageLead
+ */
+export interface PageLead {
+    /**
+     * 
+     * @type {Array<Lead>}
+     * @memberof PageLead
+     */
+    'data': Array<Lead>;
+    /**
+     * 
+     * @type {number}
+     * @memberof PageLead
+     */
+    'limit': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PageLead
+     */
+    'page': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PageLead
+     */
+    'totalElements': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PageLead
+     */
+    'totalPages': number;
+}
+/**
+ * 
+ * @export
  * @interface PageNew
  */
 export interface PageNew {
@@ -134,6 +411,566 @@ export interface PageNew {
      */
     'totalPages': number;
 }
+/**
+ * 
+ * @export
+ * @interface Subject
+ */
+export interface Subject {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Subject
+     */
+    'credit': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Subject
+     */
+    'exam': boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof Subject
+     */
+    'hours': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Subject
+     */
+    'title': string;
+}
+
+/**
+ * CurriculumApi - axios parameter creator
+ * @export
+ */
+export const CurriculumApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CurriculumRequest} curriculumRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        saveCurriculum: async (curriculumRequest: CurriculumRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'curriculumRequest' is not null or undefined
+            assertParamExists('saveCurriculum', 'curriculumRequest', curriculumRequest)
+            const localVarPath = `/api/curriculum`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(curriculumRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CurriculumApi - functional programming interface
+ * @export
+ */
+export const CurriculumApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CurriculumApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {CurriculumRequest} curriculumRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async saveCurriculum(curriculumRequest: CurriculumRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.saveCurriculum(curriculumRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * CurriculumApi - factory interface
+ * @export
+ */
+export const CurriculumApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CurriculumApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {CurriculumRequest} curriculumRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        saveCurriculum(curriculumRequest: CurriculumRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.saveCurriculum(curriculumRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * CurriculumApi - object-oriented interface
+ * @export
+ * @class CurriculumApi
+ * @extends {BaseAPI}
+ */
+export class CurriculumApi extends BaseAPI {
+    /**
+     * 
+     * @param {CurriculumRequest} curriculumRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CurriculumApi
+     */
+    public saveCurriculum(curriculumRequest: CurriculumRequest, options?: AxiosRequestConfig) {
+        return CurriculumApiFp(this.configuration).saveCurriculum(curriculumRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * LeadsApi - axios parameter creator
+ * @export
+ */
+export const LeadsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {LeadRequest} leadRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createLead: async (leadRequest: LeadRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'leadRequest' is not null or undefined
+            assertParamExists('createLead', 'leadRequest', leadRequest)
+            const localVarPath = `/api/leads`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(leadRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteLead: async (id: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteLead', 'id', id)
+            const localVarPath = `/api/leads/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {Array<number>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteLeads: async (requestBody: Array<number>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'requestBody' is not null or undefined
+            assertParamExists('deleteLeads', 'requestBody', requestBody)
+            const localVarPath = `/api/leads`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(requestBody, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLeadById: async (id: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getLeadById', 'id', id)
+            const localVarPath = `/api/leads/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {LeadFilter} leadFilter 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLeads: async (leadFilter: LeadFilter, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'leadFilter' is not null or undefined
+            assertParamExists('getLeads', 'leadFilter', leadFilter)
+            const localVarPath = `/api/leads/filter`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(leadFilter, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {Lead} lead 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateLead: async (lead: Lead, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'lead' is not null or undefined
+            assertParamExists('updateLead', 'lead', lead)
+            const localVarPath = `/api/leads`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(lead, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * LeadsApi - functional programming interface
+ * @export
+ */
+export const LeadsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = LeadsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {LeadRequest} leadRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createLead(leadRequest: LeadRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createLead(leadRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteLead(id: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteLead(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {Array<number>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteLeads(requestBody: Array<number>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteLeads(requestBody, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getLeadById(id: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Lead>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLeadById(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {LeadFilter} leadFilter 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getLeads(leadFilter: LeadFilter, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PageLead>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLeads(leadFilter, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {Lead} lead 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateLead(lead: Lead, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateLead(lead, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * LeadsApi - factory interface
+ * @export
+ */
+export const LeadsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = LeadsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {LeadRequest} leadRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createLead(leadRequest: LeadRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.createLead(leadRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteLead(id: number, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteLead(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {Array<number>} requestBody 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteLeads(requestBody: Array<number>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteLeads(requestBody, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLeadById(id: number, options?: any): AxiosPromise<Lead> {
+            return localVarFp.getLeadById(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {LeadFilter} leadFilter 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLeads(leadFilter: LeadFilter, options?: any): AxiosPromise<PageLead> {
+            return localVarFp.getLeads(leadFilter, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {Lead} lead 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateLead(lead: Lead, options?: any): AxiosPromise<void> {
+            return localVarFp.updateLead(lead, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * LeadsApi - object-oriented interface
+ * @export
+ * @class LeadsApi
+ * @extends {BaseAPI}
+ */
+export class LeadsApi extends BaseAPI {
+    /**
+     * 
+     * @param {LeadRequest} leadRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LeadsApi
+     */
+    public createLead(leadRequest: LeadRequest, options?: AxiosRequestConfig) {
+        return LeadsApiFp(this.configuration).createLead(leadRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LeadsApi
+     */
+    public deleteLead(id: number, options?: AxiosRequestConfig) {
+        return LeadsApiFp(this.configuration).deleteLead(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {Array<number>} requestBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LeadsApi
+     */
+    public deleteLeads(requestBody: Array<number>, options?: AxiosRequestConfig) {
+        return LeadsApiFp(this.configuration).deleteLeads(requestBody, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LeadsApi
+     */
+    public getLeadById(id: number, options?: AxiosRequestConfig) {
+        return LeadsApiFp(this.configuration).getLeadById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {LeadFilter} leadFilter 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LeadsApi
+     */
+    public getLeads(leadFilter: LeadFilter, options?: AxiosRequestConfig) {
+        return LeadsApiFp(this.configuration).getLeads(leadFilter, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {Lead} lead 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LeadsApi
+     */
+    public updateLead(lead: Lead, options?: AxiosRequestConfig) {
+        return LeadsApiFp(this.configuration).updateLead(lead, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
 
 /**
  * NewsApi - axios parameter creator
@@ -150,7 +987,7 @@ export const NewsApiAxiosParamCreator = function (configuration?: Configuration)
         createNew: async (newRequest: NewRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'newRequest' is not null or undefined
             assertParamExists('createNew', 'newRequest', newRequest)
-            const localVarPath = `/news`;
+            const localVarPath = `/api/news`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -185,7 +1022,7 @@ export const NewsApiAxiosParamCreator = function (configuration?: Configuration)
         deleteNew: async (id: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteNew', 'id', id)
-            const localVarPath = `/news/{id}`
+            const localVarPath = `/api/news/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -218,7 +1055,7 @@ export const NewsApiAxiosParamCreator = function (configuration?: Configuration)
         deleteNews: async (requestBody: Array<number>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'requestBody' is not null or undefined
             assertParamExists('deleteNews', 'requestBody', requestBody)
-            const localVarPath = `/news`;
+            const localVarPath = `/api/news`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -253,7 +1090,7 @@ export const NewsApiAxiosParamCreator = function (configuration?: Configuration)
         getNewById: async (id: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getNewById', 'id', id)
-            const localVarPath = `/news/{id}`
+            const localVarPath = `/api/news/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -279,15 +1116,14 @@ export const NewsApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @param {number} [limit] 
-         * @param {number} [page] 
-         * @param {string} [sort] 
-         * @param {string} [search] 
+         * @param {NewsFilter} newsFilter 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getNews: async (limit?: number, page?: number, sort?: string, search?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/news`;
+        getNews: async (newsFilter: NewsFilter, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'newsFilter' is not null or undefined
+            assertParamExists('getNews', 'newsFilter', newsFilter)
+            const localVarPath = `/api/news/filter`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -295,31 +1131,18 @@ export const NewsApiAxiosParamCreator = function (configuration?: Configuration)
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (limit !== undefined) {
-                localVarQueryParameter['limit'] = limit;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (sort !== undefined) {
-                localVarQueryParameter['sort'] = sort;
-            }
-
-            if (search !== undefined) {
-                localVarQueryParameter['search'] = search;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(newsFilter, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -335,7 +1158,7 @@ export const NewsApiAxiosParamCreator = function (configuration?: Configuration)
         updateNew: async (_new: New, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter '_new' is not null or undefined
             assertParamExists('updateNew', '_new', _new)
-            const localVarPath = `/news`;
+            const localVarPath = `/api/news`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -413,15 +1236,12 @@ export const NewsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {number} [limit] 
-         * @param {number} [page] 
-         * @param {string} [sort] 
-         * @param {string} [search] 
+         * @param {NewsFilter} newsFilter 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getNews(limit?: number, page?: number, sort?: string, search?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PageNew>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getNews(limit, page, sort, search, options);
+        async getNews(newsFilter: NewsFilter, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PageNew>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getNews(newsFilter, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -482,15 +1302,12 @@ export const NewsApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @param {number} [limit] 
-         * @param {number} [page] 
-         * @param {string} [sort] 
-         * @param {string} [search] 
+         * @param {NewsFilter} newsFilter 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getNews(limit?: number, page?: number, sort?: string, search?: string, options?: any): AxiosPromise<PageNew> {
-            return localVarFp.getNews(limit, page, sort, search, options).then((request) => request(axios, basePath));
+        getNews(newsFilter: NewsFilter, options?: any): AxiosPromise<PageNew> {
+            return localVarFp.getNews(newsFilter, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -557,16 +1374,13 @@ export class NewsApi extends BaseAPI {
 
     /**
      * 
-     * @param {number} [limit] 
-     * @param {number} [page] 
-     * @param {string} [sort] 
-     * @param {string} [search] 
+     * @param {NewsFilter} newsFilter 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof NewsApi
      */
-    public getNews(limit?: number, page?: number, sort?: string, search?: string, options?: AxiosRequestConfig) {
-        return NewsApiFp(this.configuration).getNews(limit, page, sort, search, options).then((request) => request(this.axios, this.basePath));
+    public getNews(newsFilter: NewsFilter, options?: AxiosRequestConfig) {
+        return NewsApiFp(this.configuration).getNews(newsFilter, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

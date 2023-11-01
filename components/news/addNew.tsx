@@ -57,7 +57,7 @@ export const AddNew = ({setRefreshData}: {
         if (formData.text !== '' && formData.title !== '') {
             newAPI.createNew(formData)
                 .then(() => {
-                    setRefreshData(true);
+                    setRefreshData(value => !value);
                 })
                 .catch(er => console.error(er));
             return true;
@@ -74,7 +74,7 @@ export const AddNew = ({setRefreshData}: {
                 <Modal
                     isOpen={isOpen}
                     onOpenChange={onOpenChange}
-                    placement="top-center"
+                    placement="auto"
                 >
                     <ModalContent>
                         {(onClose) => (

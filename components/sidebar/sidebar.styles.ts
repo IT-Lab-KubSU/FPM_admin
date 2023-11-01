@@ -1,3 +1,4 @@
+"use client"
 import { tv } from "@nextui-org/react";
 
 export const SidebarWrapper = tv({
